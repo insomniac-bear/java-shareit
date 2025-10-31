@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,19 +8,15 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Item {
-    private Long id;
+public class NewItemRequestDto {
+    @NotEmpty
+    @NotBlank
+    private final String name;
 
     @NotEmpty
     @NotBlank
-    private String name;
-
-    @NotEmpty
-    @NotBlank
-    private String description;
-
-    private boolean available;
+    private final String description;
 
     @NotNull
-    private Long userId;
+    private final Boolean available;
 }
