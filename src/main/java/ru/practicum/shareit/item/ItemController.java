@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
-import ru.practicum.shareit.util.HeaderConst;
+import static ru.practicum.shareit.util.HeaderConst.USER_HEADER;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemResponseDto createItem(@RequestHeader(HeaderConst.USER_HEADER) long userId, @Valid @RequestBody NewItemRequestDto item) {
+    public ItemResponseDto createItem(@RequestHeader(USER_HEADER) long userId, @Valid @RequestBody NewItemRequestDto item) {
         log.info("POST /items - создание вещи");
         return service.createItem(userId, item);
     }
@@ -29,7 +29,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public ItemResponseDto updateItem(
-            @RequestHeader(HeaderConst.USER_HEADER) long userId, @PathVariable long itemId, @Valid @RequestBody UpdateItemRequestDto item
+            @RequestHeader(USER_HEADER) long userId, @PathVariable long itemId, @Valid @RequestBody UpdateItemRequestDto item
     ) {
         log.info("PATCH /items - обновление вещи");
         return service.updateItem(userId, itemId, item);
@@ -44,7 +44,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemResponseDto> getUserItems(@RequestHeader(HeaderConst.USER_HEADER) long userId) {
+    public Collection<ItemResponseDto> getUserItems(@RequestHeader(USER_HEADER) long userId) {
         log.info("GET /items - получение списка вещей пользователя с id {}", userId);
         return service.getAllUserItems(userId);
     }
