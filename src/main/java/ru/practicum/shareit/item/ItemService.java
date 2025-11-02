@@ -13,8 +13,6 @@ public interface ItemService {
 
     Collection<ItemResponseDto> getAllUserItems(Long userId);
 
-    Collection<ItemResponseDto> getAllItems();
-
     ItemResponseDto getItemById(Long itemId);
 
     Collection<ItemResponseDto> searchItems(String text);

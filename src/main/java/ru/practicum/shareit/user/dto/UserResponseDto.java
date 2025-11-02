@@ -8,15 +8,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserDtoResponse {
+public class UserResponseDto {
     @NotNull
     private Long id;
 
-    @NotNull
     @NotBlank
     private String name;
 
-    @NotNull
     @NotBlank
     @Email
     private String email;

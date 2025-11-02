@@ -8,7 +8,7 @@ import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.NewUserRequestDto;
 import ru.practicum.shareit.user.dto.UpdateUserRequestDto;
-import ru.practicum.shareit.user.dto.UserDtoResponse;
+import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
@@ -22,35 +22,35 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public UserDtoResponse getUserById(Long id) {
-        return repository.findById(id)
+    public UserResponseDto getUserById(Long id) {
+        UserResponseDto res = repository.findById(id)
                 .map(UserMapper::userToUserDtoResponse)
-                .orElseThrow(() -> {
-                    log.error("Пользователь с id {} не найден", id);
-                    return new NotFoundException("Пользователь с id " + id + " не найден");
-                });
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
+
+        log.info("Подготовка ответа о найденном пользователе с id {} - {}", id, res);
+        return res;
     }
 
     @Override
-    public UserDtoResponse createUser(NewUserRequestDto newUserRequestDto) {
+    public UserResponseDto createUser(NewUserRequestDto newUserRequestDto) {
         Optional<User> existingUser = repository.findByEmail(newUserRequestDto.getEmail());
 
         if (existingUser.isPresent()) {
-            log.error("Попытка создать пользователя {} с существующим email {}", newUserRequestDto, newUserRequestDto.getEmail());
             throw new DuplicatedDataException("Email " + newUserRequestDto.getEmail() + " уже используется");
         }
 
         User newUser = repository.create(newUserRequestDto);
+        UserResponseDto res = UserMapper.userToUserDtoResponse(newUser);
 
-        return UserMapper.userToUserDtoResponse(newUser);
+        log.info("Подготовка ответа о созданном пользователе {}", res);
+        return res;
     }
 
     @Override
-    public UserDtoResponse updateUser(Long userId, UpdateUserRequestDto updateUserRequestDto) {
+    public UserResponseDto updateUser(Long userId, UpdateUserRequestDto updateUserRequestDto) {
         Optional<User> updatingUser = repository.findById(userId);
 
         if (updatingUser.isEmpty()) {
-            log.error("Пользователь с id {} не найден", userId);
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
 
@@ -59,14 +59,16 @@ public class UserServiceImpl implements UserService {
             Optional<User> existingUser = repository.findByEmail(updateUserRequestDto.getEmail());
 
             if (existingUser.isPresent() && !Objects.equals(existingUser.get().getId(), userId)) {
-                log.error("Попытка создать пользователя {} с существующим email {}", updateUserRequestDto, updateUserRequestDto.getEmail());
                 throw new DuplicatedDataException("Email " + updateUserRequestDto.getEmail() + " уже используется");
             }
         }
 
 
         User updatedUser = repository.update(userId, updateUserRequestDto);
-        return UserMapper.userToUserDtoResponse(updatedUser);
+       UserResponseDto res = UserMapper.userToUserDtoResponse(updatedUser);
+
+        log.info("Подготовка ответа об обновленном пользователе {}", res);
+        return res;
     }
 
     @Override
@@ -74,14 +76,13 @@ public class UserServiceImpl implements UserService {
         Optional<User> deletingUser = repository.findById(userId);
 
         if (deletingUser.isEmpty()) {
-            log.error("Пользователь с id {} не найден", userId);
             throw new NotFoundException("Пользователь с id " + userId + " не найден");
         }
 
         boolean isDeleted = repository.delete(deletingUser.get());
+        log.info("Статус удаления пользователя: {}", isDeleted);
 
         if (!isDeleted) {
-            log.error("Внутренняя ошибка при попытку удаления пользователя");
             throw new InternalServerException("Не удалось удалить пользователя. Попробуйте позднее");
         }
     }

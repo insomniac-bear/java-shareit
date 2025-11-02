@@ -25,37 +25,41 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto createItem(Long userId, NewItemRequestDto item) {
         userService.getUserById(userId);
         Item savedItem = itemRepository.create(userId, item);
-        return ItemMapper.itemToItemResponseDto(savedItem);
+        ItemResponseDto res = ItemMapper.itemToItemResponseDto(savedItem);
+
+        log.info("Подготовка ответа о созданноой вещи: {}", res);
+        return res;
     }
 
     @Override
     public ItemResponseDto updateItem(Long userId, Long itemId, UpdateItemRequestDto item) {
         userService.getUserById(userId);
         Item updatedItem = itemRepository.update(itemId, item);
-        return ItemMapper.itemToItemResponseDto(updatedItem);
+        ItemResponseDto res =  ItemMapper.itemToItemResponseDto(updatedItem);
+
+        log.info("Подготовка ответа об обновленной вещи: {}", res);
+        return res;
     }
 
     @Override
     public Collection<ItemResponseDto> getAllUserItems(Long userId) {
         userService.getUserById(userId);
-        return itemRepository.findAllUsersItems(userId).stream()
+        Collection<ItemResponseDto> res = itemRepository.findAllUsersItems(userId).stream()
                 .map(ItemMapper::itemToItemResponseDto)
                 .toList();
-    }
 
-    @Override
-    public Collection<ItemResponseDto> getAllItems() {
-        return List.of();
+        log.info("Подготовка ответа о полученных вещах пользователя с id {} - {}", userId, res);
+        return res;
     }
 
     @Override
     public ItemResponseDto getItemById(Long itemId) {
         Item item = itemRepository.getItem(itemId)
-                .orElseThrow(() -> {
-                    log.error("Вещь с id {} не найдена", itemId);
-                    return new NotFoundException("Вещь с id " + itemId + " не найдена");
-                });
-        return ItemMapper.itemToItemResponseDto(item);
+                .orElseThrow(() ->  new NotFoundException("Вещь с id " + itemId + " не найдена"));
+        ItemResponseDto res = ItemMapper.itemToItemResponseDto(item);
+
+        log.info("Подготовка ответа о найденной вещи с id {} - {}", itemId, res);
+        return res;
     }
 
     @Override
@@ -64,8 +68,11 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
 
-        return itemRepository.findItemsByText(text).stream()
+        Collection<ItemResponseDto> res = itemRepository.findItemsByText(text).stream()
                 .map(ItemMapper::itemToItemResponseDto)
                 .toList();
+
+        log.info("Подготовка ответа о найденых вещах по тексту {} - {}", text, res);
+        return res;
     }
 }

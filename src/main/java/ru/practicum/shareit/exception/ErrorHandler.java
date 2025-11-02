@@ -16,21 +16,21 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleParameterNotFound(final NotFoundException e) {
+    public Map<String, String> handleParameterNotFound(NotFoundException e) {
         log.error("Ошибка: {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleDuplicateData(final DuplicatedDataException e) {
+    public Map<String, String> handleDuplicateData(DuplicatedDataException e) {
         log.error("Ошибка: {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleParameterNotValid(final ValidationException e) {
+    public Map<String, String> handleParameterNotValid(ValidationException e) {
         log.error("Ошибка: {}", e.getMessage());
         return Map.of("error", e.getMessage());
     }
@@ -50,7 +50,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleThrowable(final Throwable e) {
+    public Map<String, String> handleThrowable(Throwable e) {
         log.error("Ошибка: {}", e.getMessage());
         return Map.of(
                 "error", "Произошла непредвиденная ошибка. " + e.getMessage()

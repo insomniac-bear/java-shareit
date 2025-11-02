@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.NewUserRequestDto;
 import ru.practicum.shareit.user.dto.UpdateUserRequestDto;
-import ru.practicum.shareit.user.dto.UserDtoResponse;
+import ru.practicum.shareit.user.dto.UserResponseDto;
 
 @Slf4j
 @RestController
@@ -18,21 +18,21 @@ public class UserController {
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDtoResponse getUser(@PathVariable Long userId) {
+    public UserResponseDto getUser(@PathVariable Long userId) {
         log.info("GET /users/{} - получить пользователя по id", userId);
         return service.getUserById(userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDtoResponse createUser(@Valid @RequestBody NewUserRequestDto newUserRequestDto) {
+    public UserResponseDto createUser(@Valid @RequestBody NewUserRequestDto newUserRequestDto) {
         log.info("POST /users - создать пользователя {}", newUserRequestDto);
         return service.createUser(newUserRequestDto);
     }
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDtoResponse updateUser(@PathVariable Long userId, @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto) {
+    public UserResponseDto updateUser(@PathVariable Long userId, @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto) {
         log.info("PATCH /users/{} - обновить пользователя {}", userId, updateUserRequestDto);
         return service.updateUser(userId, updateUserRequestDto);
     }
