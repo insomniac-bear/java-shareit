@@ -4,5 +4,5 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class HeaderConst {
-    public final static String USER_HEADER = "X-Sharer-User-Id";
+    public static final String USER_HEADER = "X-Sharer-User-Id";
 }
