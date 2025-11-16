@@ -1,19 +1,11 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.user.dto.NewUserRequestDto;
-import ru.practicum.shareit.user.dto.UpdateUserRequestDto;
-import ru.practicum.shareit.user.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.Optional;
 
-public interface UserRepository {
-    public Optional<User> findById(Long id);
+public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
 
-    public Optional<User> findByEmail(String email);
-
-    public User create(NewUserRequestDto user);
-
-    public User update(Long userId, UpdateUserRequestDto user);
-
-    public boolean delete(User user);
+    Optional<User> findUserByEmail(String email);
 }

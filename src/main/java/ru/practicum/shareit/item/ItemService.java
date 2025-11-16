@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.item.dto.ItemResponseDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingDateResponseDto;
 import ru.practicum.shareit.item.dto.NewItemRequestDto;
 import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
 
@@ -11,9 +12,11 @@ public interface ItemService {
 
     ItemResponseDto updateItem(Long userId, Long itemId, UpdateItemRequestDto item);
 
-    Collection<ItemResponseDto> getAllUserItems(Long userId);
+    Collection<ItemWithBookingDateResponseDto> getAllUserItems(Long userId);
 
-    ItemResponseDto getItemById(Long itemId);
+    ItemWithBookingDateResponseDto getItemById(Long itemId, Long userId);
+
+    Item getRawItemById(Long itemId);
 
     Collection<ItemResponseDto> searchItems(String text);
 }

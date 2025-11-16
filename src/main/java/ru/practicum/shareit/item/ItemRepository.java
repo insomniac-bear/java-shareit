@@ -1,20 +1,20 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.NewItemRequestDto;
-import ru.practicum.shareit.item.dto.UpdateItemRequestDto;
-import ru.practicum.shareit.item.model.Item;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ItemRepository {
-    Item create(Long userId, NewItemRequestDto item);
+public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredicateExecutor<Item> {
 
-    Item update(Long itemId, UpdateItemRequestDto item);
+    Collection<Item> findAllByUser_Id(Long userId);
 
-    Collection<Item> findAllUsersItems(Long userId);
-
-    Collection<Item> findItemsByText(String text);
-
-    Optional<Item> getItem(Long userId);
+    @Query("select it " +
+            "from Item as it " +
+            "where (lower(it.name) like lower(concat('%', ?1, '%')) " +
+            "or lower(it.description) like lower(concat('%', ?1, '%')))" +
+            "and it.available = true")
+    Collection<Item> findAllByNameContainsOrDescriptionContains(String text);
 }
