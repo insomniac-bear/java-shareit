@@ -7,7 +7,7 @@ spring:
     init.mode: always
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5431/shareit
+    url: jdbc:postgresql://localhost:5432/shareit
     username: dbuser
     password: 12345
 
