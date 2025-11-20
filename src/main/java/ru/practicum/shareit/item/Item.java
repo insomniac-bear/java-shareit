@@ -5,8 +5,10 @@ import lombok.*;
 import ru.practicum.shareit.user.User;
 
 @Entity
-@Table(name="items", schema = "public")
-@Getter @Setter @ToString
+@Table(name = "items", schema = "public")
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

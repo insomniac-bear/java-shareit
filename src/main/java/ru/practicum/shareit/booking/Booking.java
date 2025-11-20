@@ -9,8 +9,10 @@ import ru.practicum.shareit.user.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="bookings", schema = "public")
-@Getter @Setter @ToString
+@Table(name = "bookings", schema = "public")
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

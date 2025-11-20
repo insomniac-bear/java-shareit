@@ -69,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
                     log.error("Попытка изменить статус бронирования с id {} от пользователя с id {}", bookingId, userId);
-                    return new NotFoundException("Запрос бронирования с id " + bookingId +" не существует");
+                    return new NotFoundException("Запрос бронирования с id " + bookingId + " не существует");
                 });
 
         if (!booking.getItem().getUser().getId().equals(userId)) {
