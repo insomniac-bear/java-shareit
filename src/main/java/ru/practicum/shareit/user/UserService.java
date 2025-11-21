@@ -7,8 +7,6 @@ import ru.practicum.shareit.user.dto.UserResponseDto;
 public interface UserService {
     UserResponseDto getUserById(Long id);
 
-    User getRawUserById(Long userId);
-
     UserResponseDto createUser(NewUserRequestDto newUserRequestDto);
 
     UserResponseDto updateUser(Long userId, UpdateUserRequestDto updateUserRequestDto);

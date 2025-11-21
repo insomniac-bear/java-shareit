@@ -16,7 +16,5 @@ public interface ItemService {
 
     ItemWithBookingDateResponseDto getItemById(Long itemId, Long userId);
 
-    Item getRawItemById(Long itemId);
-
     Collection<ItemResponseDto> searchItems(String text);
 }

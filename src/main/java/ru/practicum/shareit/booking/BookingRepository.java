@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>, QuerydslPredicateExecutor<Booking> {
-    List<Booking> findTop2ByItem_IdOrderByStartDesc(Long itemId);
+    List<Booking> findTop2ByItemIdOrderByStartDesc(Long itemId);
 
-    Optional<Booking> findBookingByItem_IdAndBooker_Id(Long itemId, Long authorId);
+    Optional<Booking> findBookingByItemIdAndBookerId(Long itemId, Long authorId);
 }

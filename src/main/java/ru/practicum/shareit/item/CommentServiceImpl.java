@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponseDto addComment(Long itemId, Long authorId, NewCommentRequestDto comment) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> {
-                    log.error("Попытка добавить комментариц несуществующей вещи с id {}", itemId);
+                    log.error("Попытка добавить комментарий несуществующей вещи с id {}", itemId);
                     return new NotFoundException("Вещь с id " + itemId + " не найдена");
                 });
         User author = userRepository.findById(authorId)
@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
                     log.error("Попытка добавить комментарий несуществующим пользователем с id {}", authorId);
                     return new ForbiddenException("Доступ запрещен");
                 });
-        Booking booking = bookingRepository.findBookingByItem_IdAndBooker_Id(itemId, authorId)
+        Booking booking = bookingRepository.findBookingByItemIdAndBookerId(itemId, authorId)
                 .orElseThrow(() -> {
                     log.error("Попытка добавить комментарий пользователем с id {}, который не брал вещь с id {}", authorId, itemId);
                     return new ForbiddenException("Доступ запрещен");
@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentResponseDto> getItemComments(Long itemId) {
-        return commentRepository.findAllByItem_Id(itemId).stream()
+        return commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::commentToCommentResponseDto)
                 .toList();
     }

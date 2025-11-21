@@ -1,25 +1,31 @@
 package ru.practicum.shareit.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "users", schema = "public")
 @Getter
 @Setter
-@ToString
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
+    @NotBlank
+    @Length(max = 255)
     private String name;
 
-    @Column(nullable = false)
+    @Column
+    @Email
+    @NotBlank
+    @Length(max = 512)
     private String email;
 
     @Override
@@ -32,5 +38,14 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

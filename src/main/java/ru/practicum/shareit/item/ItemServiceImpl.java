@@ -30,11 +30,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemResponseDto createItem(Long userId, NewItemRequestDto newItem) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка создать бронировани от несуществующего пользователя с id {}", userId);
-                    return new NotFoundException("Пользователь не найден");
-                });
+        User user = findUser(userId, new NotFoundException("Пользователь не найден"));
         Item savedItem = itemRepository.save(ItemMapper.newItemRequestDtoToItem(newItem, user));
         ItemResponseDto res = ItemMapper.itemToItemResponseDto(savedItem);
 
@@ -43,12 +39,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemResponseDto updateItem(Long userId, Long itemId, UpdateItemRequestDto item) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка создать бронировани от несуществующего пользователя с id {}", userId);
-                    return new ForbiddenException("Доступ запрещен");
-                });
+        User user = findUser(userId, new ForbiddenException("Доступ запрещен"));
         Item savedItem = itemRepository.findById(itemId)
                 .orElseThrow(() ->  new NotFoundException("Вещь с id " + itemId + " не найдена"));
 
@@ -58,23 +51,18 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Item updatingItem = ItemMapper.updateItemField(savedItem, item);
-        Item updatedItem = itemRepository.save(updatingItem);
-        ItemResponseDto res =  ItemMapper.itemToItemResponseDto(updatedItem);
-
+        ItemResponseDto res =  ItemMapper.itemToItemResponseDto(updatingItem);
         log.info("Подготовка ответа об обновленной вещи: {}", res);
+
         return res;
     }
 
     @Override
     public Collection<ItemWithBookingDateResponseDto> getAllUserItems(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка создать бронировани от несуществующего пользователя с id {}", userId);
-                    return new ForbiddenException("Доступ запрещен");
-                });
-        Collection<ItemWithBookingDateResponseDto> res = itemRepository.findAllByUser_Id(userId).stream()
+        findUser(userId, new ForbiddenException("Доступ запрещен"));
+        Collection<ItemWithBookingDateResponseDto> res = itemRepository.findAllByUserId(userId).stream()
                 .map(item -> {
-                    List<Booking> bookingList = bookingRepository.findTop2ByItem_IdOrderByStartDesc(item.getId());
+                    List<Booking> bookingList = bookingRepository.findTop2ByItemIdOrderByStartDesc(item.getId());
 
                     LocalDateTime nearestBookingDate = null;
                     LocalDateTime lastBookingDate = null;
@@ -102,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() ->  new NotFoundException("Вещь с id " + itemId + " не найдена"));
 
-        List<Booking> bookingList = bookingRepository.findTop2ByItem_IdOrderByStartDesc(item.getId());
+        List<Booking> bookingList = bookingRepository.findTop2ByItemIdOrderByStartDesc(item.getId());
 
         LocalDateTime nearestBookingDate = null;
         LocalDateTime lastBookingDate = null;
@@ -124,12 +112,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getRawItemById(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() ->  new NotFoundException("Вещь с id " + itemId + " не найдена"));
-    }
-
-    @Override
     public Collection<ItemResponseDto> searchItems(String text) {
         if (text == null || text.isBlank()) {
             return List.of();
@@ -141,5 +123,13 @@ public class ItemServiceImpl implements ItemService {
 
         log.info("Подготовка ответа о найденых вещах по тексту {} - {}", text, res);
         return res;
+    }
+
+    private User findUser(Long userId, RuntimeException exception) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Попытка создать бронировани от несуществующего пользователя с id {}", userId);
+                    return exception;
+                });
     }
 }

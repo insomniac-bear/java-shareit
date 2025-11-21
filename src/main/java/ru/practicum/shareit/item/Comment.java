@@ -1,7 +1,11 @@
 package ru.practicum.shareit.item;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -10,7 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "comments", schema = "public")
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,10 +22,12 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 1000)
+    @Column
+    @NotBlank
+    @Length(max = 1000)
     private String text;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime created = LocalDateTime.now();
 
     @ManyToOne
@@ -43,5 +48,14 @@ public class Comment {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", created=" + created +
+                '}';
     }
 }

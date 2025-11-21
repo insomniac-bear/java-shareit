@@ -35,11 +35,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto createBooking(Long userId, NewBookingRequestDto newBooking) {
-        User booker = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка создать бронировани от несуществующего пользователя с id {}", userId);
-                    return new NotFoundException("Пользователь не найден");
-                });
+        User booker = findUser(userId);
         Long bookingItemId = newBooking.getItemId();
         Item bookingItem = itemRepository.findById(bookingItemId)
                 .orElseThrow(() -> {
@@ -59,12 +55,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto changeAvailableBooking(Long bookingId, boolean isBooking, Long userId) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка изменить статус бронирования с id {} от несуществующего пользователя с id {}", bookingId, userId);
-                    return new ForbiddenException("Доступ запрещен");
-                });
+        User owner = findUser(userId);
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
@@ -80,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
         BookingStatus status = isBooking ? BookingStatus.APPROVED : BookingStatus.REJECTED;
 
         booking.setStatus(status);
-        BookingResponseDto updatedBooking = BookingMapper.bookingToBookingResponseDto(bookingRepository.save(booking));
+        BookingResponseDto updatedBooking = BookingMapper.bookingToBookingResponseDto(booking);
         log.info("Подготовка ответа бронирования с обновленным статусом {}", updatedBooking);
 
         return updatedBooking;
@@ -88,11 +81,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getBooking(Long bookingId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка получть бронирование с id {} от несуществующего пользователя с id {}", bookingId, userId);
-                    return new ForbiddenException("Доступ запрещен");
-                });
+        User user = findUser(userId);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> {
                     log.error("Попытка получть несуществующее бронирование с id {}", bookingId);
@@ -111,11 +100,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDto> getBookings(Long userId, BookingState state, RequestRole role) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Попытка получть бронирования от несуществующего пользователя с id {}", userId);
-                    return new ForbiddenException("Доступ запрещен");
-                });
+        findUser(userId);
 
         BooleanExpression byUserId = role == RequestRole.BOOKER ?
                 QBooking.booking.booker.id.eq(userId) : QBooking.booking.item.user.id.eq(userId);
@@ -140,5 +125,13 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED -> QBooking.booking.status.eq(BookingStatus.REJECTED);
             case ALL -> null;
         };
+    }
+
+    private User findUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Попытка запроса от несуществующего пользователя с id {}", userId);
+                    return new ForbiddenException("Доступ запрещен");
+                });
     }
 }

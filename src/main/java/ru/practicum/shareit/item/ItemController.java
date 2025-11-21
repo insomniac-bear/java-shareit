@@ -62,10 +62,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponseDto addComment(
-            @RequestHeader(USER_HEADER) long userId,
-            @PathVariable long itemId,
-            @Valid @RequestBody NewCommentRequestDto comment
+    public CommentResponseDto addComment(@RequestHeader(USER_HEADER) long userId,
+            @PathVariable long itemId, @Valid @RequestBody NewCommentRequestDto comment
     ) {
         log.info("POST /items/{}/comments - добавление комментария {} пользователем с id {} ", itemId, comment, userId);
         return commentService.addComment(itemId, userId, comment);

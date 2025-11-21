@@ -8,12 +8,12 @@ import java.util.Collection;
 
 public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredicateExecutor<Item> {
 
-    Collection<Item> findAllByUser_Id(Long userId);
+    Collection<Item> findAllByUserId(Long userId);
 
     @Query("select it " +
             "from Item as it " +
-            "where (lower(it.name) like lower(concat('%', ?1, '%')) " +
-            "or lower(it.description) like lower(concat('%', ?1, '%')))" +
+            "where (lower(it.name) like lower(concat('%', :text, '%')) " +
+            "or lower(it.description) like lower(concat('%', :text, '%')))" +
             "and it.available = true")
     Collection<Item> findAllByNameContainsOrDescriptionContains(String text);
 }

@@ -32,12 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getRawUserById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
-    }
-
-    @Override
     @Transactional
     public UserResponseDto createUser(NewUserRequestDto newUserRequestDto) {
         Optional<User> existingUser = repository.findUserByEmail(newUserRequestDto.getEmail());
@@ -71,7 +65,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        User updatedUser = repository.save(UserMapper.updateUserField(updatingUser.get(), updateUserRequestDto));
+        User updatedUser = UserMapper.updateUserField(updatingUser.get(), updateUserRequestDto);
         UserResponseDto res = UserMapper.userToUserDtoResponse(updatedUser);
 
         log.info("Подготовка ответа об обновленном пользователе {}", res);

@@ -30,7 +30,9 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingResponseDto changeAvailableBooking(@RequestHeader(USER_HEADER) long userId, @PathVariable Long bookingId, @RequestParam(defaultValue = "false") boolean approved) {
+    public BookingResponseDto changeAvailableBooking(
+            @RequestHeader(USER_HEADER) long userId, @PathVariable Long bookingId,
+            @RequestParam(defaultValue = "false") boolean approved) {
         log.info("PATCH /bookings/{}?approved={}", bookingId, approved);
         return service.changeAvailableBooking(bookingId, approved, userId);
     }
