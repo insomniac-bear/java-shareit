@@ -1,7 +1,12 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserMapper;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @UtilityClass
 public class ItemMapper {
@@ -11,15 +16,30 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.isAvailable())
-                .userId(item.getUserId())
                 .build();
     }
 
-    public Item newItemRequestDtoToItem(NewItemRequestDto newItemRequestDto) {
+    public ItemWithBookingDateResponseDto itemToItemWithBookingDateResponseDto(
+            Item item, LocalDateTime lastBookingDate, LocalDateTime nearestBookingDate, List<CommentResponseDto> comments
+    ) {
+        return ItemWithBookingDateResponseDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .user(UserMapper.userToUserDtoResponse(item.getUser()))
+                .lastBooking(lastBookingDate)
+                .nextBooking(nearestBookingDate)
+                .comments(comments)
+                .build();
+    }
+
+    public Item newItemRequestDtoToItem(NewItemRequestDto newItemRequestDto, User user) {
         return Item.builder()
                 .available(newItemRequestDto.getAvailable())
                 .description(newItemRequestDto.getDescription())
                 .name(newItemRequestDto.getName())
+                .user(user)
                 .build();
     }
 
