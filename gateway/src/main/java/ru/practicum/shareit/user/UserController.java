@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,9 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @Slf4j
 @Validated
+@RequiredArgsConstructor
 public class UserController {
     private final UserClient client;
-
-    public UserController(UserClient client) {
-        this.client = client;
-    }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)

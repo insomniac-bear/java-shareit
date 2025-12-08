@@ -23,7 +23,6 @@ import static ru.practicum.shareit.util.HeaderConst.USER_HEADER;
 public class BookingController {
 	private final BookingClient client;
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> create(@RequestHeader(USER_HEADER) long userId, @Valid @RequestBody NewBookingRequestDto newBooking) {

@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class UpdateItemRequestDto {
-    private final String name;
-    private final String description;
-    private final Boolean available;
-    private final Long requestId;
+    private String name;
+    private String description;
+    private Boolean available;
+    private Long requestId;
 }

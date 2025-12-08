@@ -9,13 +9,13 @@ import lombok.Data;
 @Builder
 public class NewItemRequestDto {
     @NotBlank
-    private final String name;
+    private String name;
 
     @NotBlank
-    private final String description;
+    private String description;
 
     @NotNull
-    private final Boolean available;
+    private Boolean available;
 
-    private final Long requestId;
+    private Long requestId;
 }

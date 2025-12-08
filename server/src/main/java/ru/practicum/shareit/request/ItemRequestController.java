@@ -22,8 +22,8 @@ public class ItemRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemRequestResponseDto create(@RequestHeader(USER_HEADER) long userId, @Valid @RequestBody
-    NewItemRequestDto req) {
+    public ItemRequestResponseDto create(@RequestHeader(USER_HEADER) long userId,
+                                         @Valid @RequestBody NewItemRequestDto req) {
         log.info("POST /requests - создание запроса {} от пользователя с id {}", req, userId);
         return service.create(req, userId);
     }
