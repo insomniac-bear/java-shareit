@@ -13,6 +13,11 @@
 
 	<name>ShareIt Server</name>
 
+    <properties>
+        <querydsl-jpa.version>5.1.0</querydsl-jpa.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+    </properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
