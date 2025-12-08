@@ -9,8 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 
-import java.util.List;
-
 import static ru.practicum.shareit.util.HeaderConst.USER_HEADER;
 
 @Slf4j
