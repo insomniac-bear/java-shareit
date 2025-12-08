@@ -17,5 +17,7 @@ public class UpdateItemRequestDto {
         return !(description == null || description.isBlank());
     }
 
-    public boolean hasRequestId() { return requestId != null; }
+    public boolean hasRequestId() {
+        return requestId != null;
+    }
 }
